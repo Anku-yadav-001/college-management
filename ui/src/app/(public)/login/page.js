@@ -53,6 +53,7 @@ export default function Login() {
           body: JSON.stringify({ username, password }),
           credentials: 'include', 
         });
+        console.log(response);
         if (response.ok) {
           toast.success('Login successful!', {
             duration: 3000,
