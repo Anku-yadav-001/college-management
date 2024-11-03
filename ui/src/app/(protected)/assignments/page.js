@@ -38,7 +38,7 @@ export default function AssignmentList() {
 
   const fetchAssignments = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/assignments/get-all-assignments', { withCredentials: true })
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/assignments/get-all-assignments`, { withCredentials: true })
       const sortedAssignments = response.data.sort((a, b) => new Date(b.startDate) - new Date(a.startDate))
       setAssignments(sortedAssignments)
       setFilteredAssignments(sortedAssignments)

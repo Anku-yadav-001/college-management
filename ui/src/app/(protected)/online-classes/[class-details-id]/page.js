@@ -39,14 +39,14 @@ export default function OnlineClassDetails() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const lectureResponse = await axios.get(`http://localhost:8080/online-classes/get-online-class-by-id/${lectureId}`, { withCredentials: true })
+        const lectureResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/online-classes/get-online-class-by-id/${lectureId}`, { withCredentials: true })
         setLecture(lectureResponse.data)
 
-        const facultyResponse = await axios.get(`http://localhost:8080/faculty/faculty-by-id/${lectureResponse.data.facultyId}`, { withCredentials: true })
+        const facultyResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/faculty/faculty-by-id/${lectureResponse.data.facultyId}`, { withCredentials: true })
         setFaculty(facultyResponse.data)
 
         const studentPromises = lectureResponse.data.studentIds.map(studentId =>
-          axios.get(`http://localhost:8080/student/get-student/${studentId}`, { withCredentials: true })
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL}/student/get-student/${studentId}`, { withCredentials: true })
         )
         const studentResponses = await Promise.all(studentPromises)
         setStudents(studentResponses.map(response => response.data))

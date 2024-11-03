@@ -21,7 +21,7 @@ export default function AssignmentDetails() {
   useEffect(() => {
     const fetchAssignment = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/assignments/get-assignment/${assignmentId}`, { withCredentials: true })
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/assignments/get-assignment/${assignmentId}`, { withCredentials: true })
         setAssignment(response.data)
         setLoading(false)
       } catch (error) {

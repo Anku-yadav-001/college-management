@@ -34,9 +34,9 @@ export default function OnlineClassesManagement() {
 
     const fetchOnlineClasses = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/online-classes/get-all-online-classes', { withCredentials: true })
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/online-classes/get-all-online-classes`, { withCredentials: true })
             const classesWithFaculty = await Promise.all(response.data.map(async (onlineClass) => {
-                const facultyResponse = await axios.get(`http://localhost:8080/faculty/faculty-by-id/${onlineClass.facultyId}`, { withCredentials: true })
+                const facultyResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/faculty/faculty-by-id/${onlineClass.facultyId}`, { withCredentials: true })
                 return { ...onlineClass, faculty: facultyResponse.data }
             }))
             const sortedClasses = classesWithFaculty.sort((a, b) => new Date(b.startFrom) - new Date(a.startFrom))
