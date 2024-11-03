@@ -33,6 +33,6 @@ spring:
             enable: true
 
 server:
-  port: 8000
+  port: 8080
 
 jwt-secret-key: ${JWT_SECRET_KEY}
