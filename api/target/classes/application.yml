@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: api
+  profiles:
+    active: dev
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+    timeout:
+      seconds: 900
+
+logging:
+  level:
+    org:
+      springframework=DEBUG:
