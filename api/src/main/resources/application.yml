@@ -2,7 +2,7 @@ spring:
   application:
     name: api
   profiles:
-    active: prod
+    active: dev
   session:
     store-type: jdbc
     jdbc:
