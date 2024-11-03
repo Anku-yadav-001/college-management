@@ -43,6 +43,8 @@ export default function Login() {
         });
         return;
       }
+      console.log("username", username);
+        console.log("password", password);
       
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/public/login`, {
@@ -53,8 +55,7 @@ export default function Login() {
           body: JSON.stringify({ username, password }),
           credentials: 'include', 
         });
-        console.log("username", username);
-        console.log("password", password);
+      
         console.log(response);
         if (response.ok) {
           toast.success('Login successful!', {
