@@ -1,15 +1,13 @@
 spring:
   datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USER}
-    password: ${DATABASE_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://college-database-college-management.h.aivencloud.com:13625/defaultdb?useSSL=true&requireSSL=true&verifyServerCertificate=false
+    username: avnadmin
+    password: AVNS_oxOk_uSPgpUaNag75AI
 
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
-
 
   servlet:
     multipart:
@@ -21,10 +19,10 @@ spring:
     allow-circular-references: true
 
   mail:
-    host: ${EMAIL_HOST}
-    port: ${EMAIL_PORT}
-    username: ${EMAIL_USERNAME}
-    password: ${EMAIL_PASSWORD}
+    host: smtp.gmail.com
+    port: 587
+    username: amany49751@gmail.com
+    password: cckr ddab gkbt pqkv
     properties:
       mail:
         smtp:
@@ -35,4 +33,4 @@ spring:
 server:
   port: 8000
 
-jwt-secret-key: ${JWT_SECRET_KEY}
+jwt-secret-key: NbIfb2S2K3ysIv2QO4IugWbuu-3m_BRd1IVJlaiBiRM
