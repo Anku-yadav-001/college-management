@@ -1,5 +1,6 @@
 package com.yaduvanshi_brothers.api.controller;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import com.yaduvanshi_brothers.api.DTOs.LectureDTO;
 import com.yaduvanshi_brothers.api.entity.*;
 import com.yaduvanshi_brothers.api.service.*;
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @RestController
+@CrossOrigin(origins = "https://college-management-eight.vercel.app")
 @RequestMapping("/admin")
 public class AdminController {
 

@@ -1,5 +1,6 @@
 package com.yaduvanshi_brothers.api.controller;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import com.yaduvanshi_brothers.api.entity.FacultyEntity;
 import com.yaduvanshi_brothers.api.entity.UserEntity;
 import com.yaduvanshi_brothers.api.service.CustomUserService;
@@ -22,6 +23,7 @@ import java.util.List;
 
 
 @RestController
+    @CrossOrigin(origins = "https://college-management-eight.vercel.app")
 @RequestMapping("/public")
 @Slf4j
 public class PublicController {
