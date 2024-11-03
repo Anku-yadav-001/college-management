@@ -209,7 +209,7 @@ export default function Login() {
                   <DialogHeader>
                     <DialogTitle className="text-2xl font-bold mb-2">Welcome Back! 🎉</DialogTitle>
                     <DialogDescription className="text-blue-100">
-                      We're thrilled to see you again! 🌟 Your journey continues here.
+                      We are thrilled to see you again! 🌟 Your journey continues here.
                     </DialogDescription>
                   </DialogHeader>
                   <div className="mt-6 text-center">

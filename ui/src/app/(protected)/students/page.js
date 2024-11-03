@@ -139,7 +139,7 @@ export default function Students() {
         <div className="w-full mx-auto space-y-8">
             <Card>
                 <CardHeader className="bg-gradient-to-r from-purple-500 to-blue-500 text-white p-3 rounded-t-lg">
-                    <CardTitle className="text-md font-bold">Exploring Tomorrow's Innovators: The Students of College</CardTitle>
+                    <CardTitle className="text-md font-bold">Exploring Tomorrows Innovators: The Students of College</CardTitle>
                 </CardHeader>
                 <CardContent className='p-2'>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">

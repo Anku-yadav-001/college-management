@@ -116,7 +116,7 @@ export default function StudentEmail({ studentEmail = '' }) {
   return (
     <form onSubmit={sendEmail} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="emailTo">To (Professor's Email)</Label>
+        <Label htmlFor="emailTo">To (Professors Email)</Label>
         <Input id="emailTo" name="emailTo" value={emailTo} onChange={handleEmailChange} className="w-full" />
         {emailSuggestions.length > 0 && (
           <ul className="mt-1 bg-white border rounded-md shadow-sm">
