@@ -2,7 +2,7 @@ spring:
   application:
     name: api
   profiles:
-    active: dev
+    active: prod
   session:
     store-type: jdbc
     jdbc:
@@ -14,4 +14,3 @@ logging:
   level:
     org:
       springframework=DEBUG:
-
