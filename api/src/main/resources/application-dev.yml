@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USER}
-    password: ${DATABASE_PASSWORD}
+    url: jdbc:mysql://localhost:3306/collagedb
+    username: root
+    password: aman yadav
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -21,10 +21,10 @@ spring:
     allow-circular-references: true
 
   mail:
-    host: ${EMAIL_HOST}
-    port: ${EMAIL_PORT}
-    username: ${EMAIL_USERNAME}
-    password: ${EMAIL_PASSWORD}
+    host: smtp.gmail.com
+    port: 587
+    username: amany49751@gmail.com
+    password: cckr ddab gkbt pqkv
     properties:
       mail:
         smtp:
@@ -35,4 +35,4 @@ spring:
 server:
   port: 8080
 
-jwt-secret-key: ${JWT_SECRET_KEY}
+jwt-secret-key: NbIfb2S2K3ysIv2QO4IugWbuu-3m_BRd1IVJlaiBiRM
