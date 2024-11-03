@@ -87,8 +87,8 @@ public class PublicController {
             System.out.println("cookies setted - -" + jwtCookie);
 
             Cookie usernameCookie = new Cookie("username", userDetails.getUsername());
-            usernameCookie.setSecure(false);
-            usernameCookie.setHttpOnly(true);
+            usernameCookie.setSecure(true);
+            usernameCookie.setHttpOnly(false);
             usernameCookie.setPath("/");
             usernameCookie.setMaxAge(3600);
             response.addCookie(usernameCookie);
