@@ -46,11 +46,13 @@ public class PublicController {
 
     @GetMapping("/health-check")
     public ResponseEntity<?> healthCheckController(){
+        System.out.println("health check api hit..ed");
         return  ResponseEntity.status(HttpStatus.OK).body("server is working fine");
     }
 
-    @GetMapping
+    @GetMapping("/check")
     public ResponseEntity<?> publicurl(){
+
         return  ResponseEntity.status(HttpStatus.OK).body("this is public url");
     }
 
