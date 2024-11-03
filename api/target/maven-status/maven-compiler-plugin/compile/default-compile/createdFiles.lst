@@ -31,7 +31,6 @@ com\yaduvanshi_brothers\api\service\EmailService.class
 com\yaduvanshi_brothers\api\ApiApplication.class
 com\yaduvanshi_brothers\api\entity\ImageEntity.class
 com\yaduvanshi_brothers\api\service\EmailRequestService$1.class
-com\yaduvanshi_brothers\api\controller\EnvironmentLogger.class
 com\yaduvanshi_brothers\api\repository\UserRepository.class
 com\yaduvanshi_brothers\api\service\LectureService.class
 com\yaduvanshi_brothers\api\controller\AnnouncementController.class
