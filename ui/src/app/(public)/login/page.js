@@ -53,6 +53,8 @@ export default function Login() {
           body: JSON.stringify({ username, password }),
           credentials: 'include', 
         });
+        console.log("username", username);
+        console.log("password", password);
         console.log(response);
         if (response.ok) {
           toast.success('Login successful!', {
