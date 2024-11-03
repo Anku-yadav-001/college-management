@@ -80,7 +80,7 @@ public class PublicController {
                     .findFirst().orElseThrow().getAuthority();
             Cookie jwtCookie = new Cookie("jwt", jwt);
             jwtCookie.setHttpOnly(true);
-            jwtCookie.setSecure(false);
+            jwtCookie.setSecure(true);
             jwtCookie.setPath("/");
             jwtCookie.setMaxAge(3600);
             response.addCookie(jwtCookie);
@@ -88,13 +88,13 @@ public class PublicController {
 
             Cookie usernameCookie = new Cookie("username", userDetails.getUsername());
             usernameCookie.setSecure(false);
-            usernameCookie.setHttpOnly(false);
+            usernameCookie.setHttpOnly(true);
             usernameCookie.setPath("/");
             usernameCookie.setMaxAge(3600);
             response.addCookie(usernameCookie);
 
             Cookie roleCookie = new Cookie("role", role);
-            roleCookie.setSecure(false); // Set true if using HTTPS
+            roleCookie.setSecure(true); // Set true if using HTTPS
             roleCookie.setHttpOnly(false); // Role cookie can be accessed client-side
             roleCookie.setPath("/");// allow for all paths
             roleCookie.setMaxAge(3600); // 1 day expiration (24 hours)
