@@ -49,6 +49,11 @@ public class PublicController {
         return  ResponseEntity.status(HttpStatus.OK).body("server is working fine");
     }
 
+    @GetMapping
+    public ResponseEntity<?> publicurl(){
+        return  ResponseEntity.status(HttpStatus.OK).body("this is public url");
+    }
+
     @GetMapping("/get-all-users-on-this-website")
     public ResponseEntity<List<UserEntity>> userListController(){
         List<UserEntity> allUsers = userService.allUsersService();
