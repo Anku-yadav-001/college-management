@@ -65,7 +65,6 @@ public class PublicController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserEntity userData, HttpServletResponse response) {
-        System.out.println("user login cred from ui -- " + userData + "  " + response);
         try {
             // Authenticate the user
             authenticationManager.authenticate(
@@ -74,51 +73,42 @@ public class PublicController {
 
             UserDetails userDetails = customUserService.loadUserByUsername(userData.getUsername());
 
+            // Generate JWT token
             String jwt = jwtUtility.generateToken(userDetails.getUsername());
+
+            // Extract role from authorities
             String role = userDetails.getAuthorities().stream()
                     .findFirst().orElseThrow().getAuthority();
 
-            // Create JWT Cookie
+            // Set JWT cookie with SameSite attribute manually
             Cookie jwtCookie = new Cookie("jwt", jwt);
             jwtCookie.setHttpOnly(true);
-            jwtCookie.setSecure(true);  // Use secure cookie if on HTTPS
+            jwtCookie.setSecure(true); // Ensure it is sent over HTTPS
             jwtCookie.setPath("/");
-            jwtCookie.setMaxAge(3600);  // 1 hour expiration
-            jwtCookie.setDomain("college-management-brrb.onrender.com");
-            // Manually set SameSite=None since it's not available in the Cookie class directly
-            response.addHeader("Set-Cookie", String.format(
-                    "%s=%s; Path=%s; Domain=%s; Max-Age=%d; HttpOnly; Secure; SameSite=None",
-                    jwtCookie.getName(), jwtCookie.getValue(), jwtCookie.getPath(),
-                    jwtCookie.getDomain(), jwtCookie.getMaxAge()
-            ));
+            jwtCookie.setMaxAge(3600);
+            jwtCookie.setDomain("api.example.com"); // Set backend domain
+            response.addCookie(jwtCookie);
+            response.setHeader("Set-Cookie", "jwt=" + jwt + "; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=3600; Domain=api.example.com");
 
-            // Create Username Cookie
+            // Set username cookie with SameSite attribute manually
             Cookie usernameCookie = new Cookie("username", userDetails.getUsername());
             usernameCookie.setSecure(true);
-            usernameCookie.setHttpOnly(false); // Accessible client-side
+            usernameCookie.setHttpOnly(false); // Allow client to access
             usernameCookie.setPath("/");
             usernameCookie.setMaxAge(3600);
-            usernameCookie.setDomain("college-management-brrb.onrender.com");
-            // Manually set SameSite=None
-            response.addHeader("Set-Cookie", String.format(
-                    "%s=%s; Path=%s; Domain=%s; Max-Age=%d; HttpOnly=false; Secure; SameSite=None",
-                    usernameCookie.getName(), usernameCookie.getValue(), usernameCookie.getPath(),
-                    usernameCookie.getDomain(), usernameCookie.getMaxAge()
-            ));
+            usernameCookie.setDomain("api.example.com"); // Set backend domain
+            response.addCookie(usernameCookie);
+            response.setHeader("Set-Cookie", "username=" + userDetails.getUsername() + "; Secure; SameSite=None; Path=/; Max-Age=3600; Domain=api.example.com");
 
-            // Create Role Cookie
+            // Set role cookie with SameSite attribute manually
             Cookie roleCookie = new Cookie("role", role);
             roleCookie.setSecure(true);
-            roleCookie.setHttpOnly(false); // Accessible client-side
+            roleCookie.setHttpOnly(false); // Allow client to access
             roleCookie.setPath("/");
             roleCookie.setMaxAge(3600);
-            roleCookie.setDomain("college-management-brrb.onrender.com");
-            // Manually set SameSite=None
-            response.addHeader("Set-Cookie", String.format(
-                    "%s=%s; Path=%s; Domain=%s; Max-Age=%d; HttpOnly=false; Secure; SameSite=None",
-                    roleCookie.getName(), roleCookie.getValue(), roleCookie.getPath(),
-                    roleCookie.getDomain(), roleCookie.getMaxAge()
-            ));
+            roleCookie.setDomain("api.example.com"); // Set backend domain
+            response.addCookie(roleCookie);
+            response.setHeader("Set-Cookie", "role=" + role + "; Secure; SameSite=None; Path=/; Max-Age=3600; Domain=api.example.com");
 
             return ResponseEntity.ok("Login successful");
         } catch (Exception e) {
@@ -126,34 +116,37 @@ public class PublicController {
         }
     }
 
-
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
-        // Clear JWT Cookie
+        // Clear JWT cookie with SameSite attribute manually
         Cookie jwtCookie = new Cookie("jwt", null);
         jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(0);  // Set to 0 to expire the cookie
-        jwtCookie.setHttpOnly(false); // Don't need HttpOnly for logout
+        jwtCookie.setMaxAge(0);
+        jwtCookie.setHttpOnly(false);
+        jwtCookie.setDomain("api.example.com"); // Set backend domain
         response.addCookie(jwtCookie);
+        response.setHeader("Set-Cookie", "jwt=; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=0; Domain=api.example.com");
 
-        // Clear Username Cookie
+        // Clear Username Cookie with SameSite attribute manually
         Cookie usernameCookie = new Cookie("username", null);
         usernameCookie.setPath("/");
         usernameCookie.setMaxAge(0);
-        usernameCookie.setHttpOnly(false); // Don't need HttpOnly for logout
+        usernameCookie.setHttpOnly(false);
+        usernameCookie.setDomain("api.example.com"); // Set backend domain
         response.addCookie(usernameCookie);
+        response.setHeader("Set-Cookie", "username=; Secure; SameSite=None; Path=/; Max-Age=0; Domain=api.example.com");
 
-        // Clear Role Cookie
+        // Clear Role Cookie with SameSite attribute manually
         Cookie roleCookie = new Cookie("role", null);
         roleCookie.setPath("/");
         roleCookie.setMaxAge(0);
-        roleCookie.setHttpOnly(false); // Don't need HttpOnly for logout
+        roleCookie.setHttpOnly(false);
+        roleCookie.setDomain("api.example.com"); // Set backend domain
         response.addCookie(roleCookie);
+        response.setHeader("Set-Cookie", "role=; Secure; SameSite=None; Path=/; Max-Age=0; Domain=api.example.com");
 
         return ResponseEntity.ok("Logout successful...");
     }
-
-
 
 
     @PostMapping("/add-user")
