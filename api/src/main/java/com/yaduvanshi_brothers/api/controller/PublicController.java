@@ -23,7 +23,6 @@ import java.util.List;
 
 
 @RestController
-    @CrossOrigin(origins = "https://college-management-eight.vercel.app")
 @RequestMapping("/public")
 @Slf4j
 public class PublicController {
@@ -54,7 +53,6 @@ public class PublicController {
 
     @GetMapping("/check")
     public ResponseEntity<?> publicurl(){
-
         return  ResponseEntity.status(HttpStatus.OK).body("this is public url");
     }
 
@@ -67,7 +65,7 @@ public class PublicController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserEntity userData, HttpServletResponse response) {
-        System.out.println("user login cred from ui -- "+userData+"  "+ response);
+        System.out.println("user login cred from ui -- " + userData + "  " + response);
         try {
             // Authenticate the user
             authenticationManager.authenticate(
@@ -77,30 +75,50 @@ public class PublicController {
             UserDetails userDetails = customUserService.loadUserByUsername(userData.getUsername());
 
             String jwt = jwtUtility.generateToken(userDetails.getUsername());
-
             String role = userDetails.getAuthorities().stream()
                     .findFirst().orElseThrow().getAuthority();
+
+            // Create JWT Cookie
             Cookie jwtCookie = new Cookie("jwt", jwt);
             jwtCookie.setHttpOnly(true);
-            jwtCookie.setSecure(true);
+            jwtCookie.setSecure(true);  // Use secure cookie if on HTTPS
             jwtCookie.setPath("/");
-            jwtCookie.setMaxAge(3600);
-            response.addCookie(jwtCookie);
-            System.out.println("cookies setted - -" + jwtCookie);
+            jwtCookie.setMaxAge(3600);  // 1 hour expiration
+            jwtCookie.setDomain("college-management-brrb.onrender.com");
+            // Manually set SameSite=None since it's not available in the Cookie class directly
+            response.addHeader("Set-Cookie", String.format(
+                    "%s=%s; Path=%s; Domain=%s; Max-Age=%d; HttpOnly; Secure; SameSite=None",
+                    jwtCookie.getName(), jwtCookie.getValue(), jwtCookie.getPath(),
+                    jwtCookie.getDomain(), jwtCookie.getMaxAge()
+            ));
 
+            // Create Username Cookie
             Cookie usernameCookie = new Cookie("username", userDetails.getUsername());
             usernameCookie.setSecure(true);
-            usernameCookie.setHttpOnly(false);
+            usernameCookie.setHttpOnly(false); // Accessible client-side
             usernameCookie.setPath("/");
             usernameCookie.setMaxAge(3600);
-            response.addCookie(usernameCookie);
+            usernameCookie.setDomain("college-management-brrb.onrender.com");
+            // Manually set SameSite=None
+            response.addHeader("Set-Cookie", String.format(
+                    "%s=%s; Path=%s; Domain=%s; Max-Age=%d; HttpOnly=false; Secure; SameSite=None",
+                    usernameCookie.getName(), usernameCookie.getValue(), usernameCookie.getPath(),
+                    usernameCookie.getDomain(), usernameCookie.getMaxAge()
+            ));
 
+            // Create Role Cookie
             Cookie roleCookie = new Cookie("role", role);
-            roleCookie.setSecure(true); // Set true if using HTTPS
-            roleCookie.setHttpOnly(false); // Role cookie can be accessed client-side
-            roleCookie.setPath("/");// allow for all paths
-            roleCookie.setMaxAge(3600); // 1 day expiration (24 hours)
-            response.addCookie(roleCookie);
+            roleCookie.setSecure(true);
+            roleCookie.setHttpOnly(false); // Accessible client-side
+            roleCookie.setPath("/");
+            roleCookie.setMaxAge(3600);
+            roleCookie.setDomain("college-management-brrb.onrender.com");
+            // Manually set SameSite=None
+            response.addHeader("Set-Cookie", String.format(
+                    "%s=%s; Path=%s; Domain=%s; Max-Age=%d; HttpOnly=false; Secure; SameSite=None",
+                    roleCookie.getName(), roleCookie.getValue(), roleCookie.getPath(),
+                    roleCookie.getDomain(), roleCookie.getMaxAge()
+            ));
 
             return ResponseEntity.ok("Login successful");
         } catch (Exception e) {
@@ -108,30 +126,33 @@ public class PublicController {
         }
     }
 
+
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
+        // Clear JWT Cookie
         Cookie jwtCookie = new Cookie("jwt", null);
         jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(0);
-        jwtCookie.setHttpOnly(false);
+        jwtCookie.setMaxAge(0);  // Set to 0 to expire the cookie
+        jwtCookie.setHttpOnly(false); // Don't need HttpOnly for logout
         response.addCookie(jwtCookie);
 
         // Clear Username Cookie
         Cookie usernameCookie = new Cookie("username", null);
         usernameCookie.setPath("/");
         usernameCookie.setMaxAge(0);
-        usernameCookie.setHttpOnly(false);
+        usernameCookie.setHttpOnly(false); // Don't need HttpOnly for logout
         response.addCookie(usernameCookie);
 
         // Clear Role Cookie
         Cookie roleCookie = new Cookie("role", null);
         roleCookie.setPath("/");
         roleCookie.setMaxAge(0);
-        roleCookie.setHttpOnly(false);
+        roleCookie.setHttpOnly(false); // Don't need HttpOnly for logout
         response.addCookie(roleCookie);
 
         return ResponseEntity.ok("Logout successful...");
     }
+
 
 
 

@@ -81,6 +81,7 @@ export default function Login() {
           });
         }
       } catch (error) {
+        console.log(error);
         toast.error('Login failed, please try again.', {
           duration: 4000,
           icon: '⚠️',
