@@ -52,7 +52,8 @@ public class PublicController {
     }
 
     @GetMapping("/check")
-    public ResponseEntity<?> publicurl(){
+    public ResponseEntity<?> publicUrl(){
+        System.out.println("check url hitted..");
         return  ResponseEntity.status(HttpStatus.OK).body("this is public url");
     }
 
@@ -87,9 +88,9 @@ public class PublicController {
             jwtCookie.setSecure(true); // Ensure it is sent over HTTPS
             jwtCookie.setPath("/");
             jwtCookie.setMaxAge(3600);
-            jwtCookie.setDomain("college-management-brrb.onrender.com"); // Set backend domain
+            jwtCookie.setDomain("college-management-ebre.onrender.com"); // Set backend domain
             response.addCookie(jwtCookie);
-            response.setHeader("Set-Cookie", "jwt=" + jwt + "; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=3600; Domain=college-management-brrb.onrender.com");
+            response.setHeader("Set-Cookie", "jwt=" + jwt + "; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=3600; Domain=college-management-ebre.onrender.com");
 
 
             // Set username cookie with SameSite attribute manually
@@ -98,9 +99,9 @@ public class PublicController {
             usernameCookie.setHttpOnly(false); // Allow client to access
             usernameCookie.setPath("/");
             usernameCookie.setMaxAge(3600);
-            usernameCookie.setDomain("college-management-brrb.onrender.com"); // Set backend domain
+            usernameCookie.setDomain("college-management-ebre.onrender.com"); // Set backend domain
             response.addCookie(usernameCookie);
-            response.setHeader("Set-Cookie", "username=" + userDetails.getUsername() + "; Secure; SameSite=None; Path=/; Max-Age=3600; Domain=college-management-brrb.onrender.com");
+            response.setHeader("Set-Cookie", "username=" + userDetails.getUsername() + "; Secure; SameSite=None; Path=/; Max-Age=3600; Domain=college-management-ebre.onrender.com");
 
             // Set role cookie with SameSite attribute manually
             Cookie roleCookie = new Cookie("role", role);
@@ -108,9 +109,9 @@ public class PublicController {
             roleCookie.setHttpOnly(false); // Allow client to access
             roleCookie.setPath("/");
             roleCookie.setMaxAge(3600);
-            roleCookie.setDomain("college-management-brrb.onrender.com"); // Set backend domain
+            roleCookie.setDomain("college-management-ebre.onrender.com"); // Set backend domain
             response.addCookie(roleCookie);
-            response.setHeader("Set-Cookie", "role=" + role + "; Secure; SameSite=None; Path=/; Max-Age=3600; Domain=college-management-brrb.onrender.com");
+            response.setHeader("Set-Cookie", "role=" + role + "; Secure; SameSite=None; Path=/; Max-Age=3600; Domain=college-management-ebre.onrender.com");
 
             return ResponseEntity.ok("Login successful");
         } catch (Exception e) {
@@ -125,27 +126,27 @@ public class PublicController {
         jwtCookie.setPath("/");
         jwtCookie.setMaxAge(0);
         jwtCookie.setHttpOnly(false);
-        jwtCookie.setDomain("college-management-brrb.onrender.com"); // Set backend domain
+        jwtCookie.setDomain("college-management-ebre.onrender.com"); // Set backend domain
         response.addCookie(jwtCookie);
-        response.setHeader("Set-Cookie", "jwt=; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=0; Domain=college-management-brrb.onrender.com");
+        response.setHeader("Set-Cookie", "jwt=; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=0; Domain=college-management-ebre.onrender.com");
 
         // Clear Username Cookie with SameSite attribute manually
         Cookie usernameCookie = new Cookie("username", null);
         usernameCookie.setPath("/");
         usernameCookie.setMaxAge(0);
         usernameCookie.setHttpOnly(false);
-        usernameCookie.setDomain("college-management-brrb.onrender.com"); // Set backend domain
+        usernameCookie.setDomain("college-management-ebre.onrender.com"); // Set backend domain
         response.addCookie(usernameCookie);
-        response.setHeader("Set-Cookie", "username=; Secure; SameSite=None; Path=/; Max-Age=0; Domain=college-management-brrb.onrender.com");
+        response.setHeader("Set-Cookie", "username=; Secure; SameSite=None; Path=/; Max-Age=0; Domain=college-management-ebre.onrender.com");
 
         // Clear Role Cookie with SameSite attribute manually
         Cookie roleCookie = new Cookie("role", null);
         roleCookie.setPath("/");
         roleCookie.setMaxAge(0);
         roleCookie.setHttpOnly(false);
-        roleCookie.setDomain("college-management-brrb.onrender.com"); // Set backend domain
+        roleCookie.setDomain("college-management-ebre.onrender.com"); // Set backend domain
         response.addCookie(roleCookie);
-        response.setHeader("Set-Cookie", "role=; Secure; SameSite=None; Path=/; Max-Age=0; Domain=college-management-brrb.onrender.com");
+        response.setHeader("Set-Cookie", "role=; Secure; SameSite=None; Path=/; Max-Age=0; Domain=college-management-ebre.onrender.com");
 
         return ResponseEntity.ok("Logout successful...");
     }
