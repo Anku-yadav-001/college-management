@@ -20,7 +20,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-
 @Configuration
 @EnableWebSecurity
 public class SpringSecurity {
@@ -43,6 +42,7 @@ public class SpringSecurity {
                         .requestMatchers("/admin/**", "/branch/**", "/faculty/**", "/student/**", "/lectures/**", "/send-mail/**", "/image/**", "/online-classes/**", "/announcements/**", "/one-time-mail/**", "/assignments/**", "/files/**").hasRole("ADMIN")
                         .requestMatchers("/branch/**", "/faculty/**", "/student/**", "/lectures/**", "/send-mail/**", "/image/**", "/online-classes/**", "/announcements/**", "/one-time-mail/**", "/assignments/**", "/files/**").hasRole("FACULTY")
                         .requestMatchers("/student/**", "/lectures/**", "/files/**").hasRole("STUDENT")
+                        .anyRequest().authenticated() // Ensure other requests are authenticated
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // Add JWT filter
                 .build();
@@ -65,46 +65,28 @@ public class SpringSecurity {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    // CORS configuration bean to define allowed origins, methods, and headers
+    // Simplified CORS configuration bean
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        // CORS configuration for public routes (no headers sent)
-        CorsConfiguration publicCorsConfig = new CorsConfiguration();
-        publicCorsConfig.setAllowedOrigins(Arrays.asList(
+        CorsConfiguration corsConfig = new CorsConfiguration();
+        corsConfig.setAllowedOrigins(Arrays.asList(
                 "https://college-management-eight.vercel.app",
                 "https://college-management-0127cs211009-gmailcoms-projects.vercel.app",
                 "https://college-management-git-main-0127cs211009-gmailcoms-projects.vercel.app"
         ));
-        publicCorsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        publicCorsConfig.setAllowedHeaders(Arrays.asList("Content-Type", "X-Requested-With", "Accept", "Origin", "Cache-Control", "Pragma"));
-        publicCorsConfig.setAllowCredentials(true);
-        publicCorsConfig.addExposedHeader("Content-Disposition"); // Expose headers if needed
+        corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        corsConfig.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin", "Cache-Control", "Pragma"));
+        corsConfig.setAllowCredentials(true);
+        corsConfig.addExposedHeader("Content-Disposition"); // Expose headers if needed
 
-        // CORS configuration for secured routes (include Authorization header)
-        CorsConfiguration securedCorsConfig = new CorsConfiguration();
-        securedCorsConfig.setAllowedOrigins(Arrays.asList(
-                "https://college-management-eight.vercel.app",
-                "https://college-management-0127cs211009-gmailcoms-projects.vercel.app",
-                "https://college-management-git-main-0127cs211009-gmailcoms-projects.vercel.app"
-        ));
-        securedCorsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        securedCorsConfig.setAllowedHeaders(Arrays.asList(
-                "Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin", "Cache-Control", "Pragma"
-        ));
-        securedCorsConfig.setAllowCredentials(true);
-        securedCorsConfig.addExposedHeader("Content-Disposition");
-
-        // Define the CORS configuration source based on URL patterns
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/public/**", publicCorsConfig); // Public routes without Authorization header
-        source.registerCorsConfiguration("/**", securedCorsConfig); // Protected routes with Authorization header
+        source.registerCorsConfiguration("/**", corsConfig); // Apply CORS configuration for all routes
 
         System.out.println("CORS configuration applied.");
         return source;
     }
 }
-
-
+it
 //package com.yaduvanshi_brothers.api.config;
 //
 //import com.yaduvanshi_brothers.api.filter.JwtFilter;
