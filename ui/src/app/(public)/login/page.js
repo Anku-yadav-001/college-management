@@ -54,7 +54,7 @@ export default function Login() {
         });
       
         console.log(response);
-        if (response.status === 200) {
+        // if (response.status === 200) {
           toast.success('Login successful!', {
             duration: 3000,
             icon: '🎉',
@@ -65,18 +65,19 @@ export default function Login() {
             position:"bottom-right"
           });
           setShowWelcomeDialog(true);
-        } else {
-          const errorMessage = await response.text();
-          toast.error(`${errorMessage}`, {
-            duration: 4000,
-            icon: '❌',
-            style: {
-              background: '#F44336',
-              color: '#fff',
-            },
-            position:"bottom-right"
-          });
-        }
+        // } else {
+        //   const errorMessage = await response.text();
+
+        //   toast.error(`${errorMessage}`, {
+        //     duration: 4000,
+        //     icon: '❌',
+        //     style: {
+        //       background: '#F44336',
+        //       color: '#fff',
+        //     },
+        //     position:"bottom-right"
+        //   });
+        // }
       } catch (error) {
         console.log(error);
         toast.error('Login failed, please try again.', {
