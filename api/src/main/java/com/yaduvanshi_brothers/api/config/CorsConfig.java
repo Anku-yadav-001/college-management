@@ -12,6 +12,7 @@ import java.util.Arrays;
 public class CorsConfig implements WebMvcConfigurer {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+        System.out.println("cors configuration started...");
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:3001","https://college-management-eight.vercel.app","https://college-management-0127cs211009-gmailcoms-projects.vercel.app","https://college-management-git-main-0127cs211009-gmailcoms-projects.vercel.app"));
         configuration.setAllowCredentials(true);
@@ -23,6 +24,7 @@ public class CorsConfig implements WebMvcConfigurer {
         configuration.addExposedHeader("Content-Disposition");
 
         source.registerCorsConfiguration("/**", configuration);
+        System.out.println("cors configuration ended successfully");
         return source;
     }
 }
