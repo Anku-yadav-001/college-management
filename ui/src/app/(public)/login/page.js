@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { UserIcon, LockIcon, EyeIcon, EyeOffIcon } from 'lucide-react'
 import { toast, Toaster } from 'react-hot-toast'
+import axios from 'axios'
 import {
   Dialog,
   DialogContent,
@@ -47,17 +48,13 @@ export default function Login() {
         console.log("password", password);
       
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/public/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ username, password }),
-          credentials: 'include', 
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/public/login`, {
+          username,
+          password,
         });
       
         console.log(response);
-        if (response.ok) {
+        if (response.status === 200) {
           toast.success('Login successful!', {
             duration: 3000,
             icon: '🎉',
