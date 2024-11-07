@@ -33,17 +33,18 @@ public class SpringSecurity {
 
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        System.out.println("spring security starting ....");
+        System.out.println("Spring Security configuration starting...");
+
         return http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // Enable CORS with specific configuration
-                .csrf(AbstractHttpConfigurer::disable)  // Disable CSRF
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS with specific configuration
+                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/public/**").permitAll()  // Allow public endpoints
+                        .requestMatchers("/public/**").permitAll() // Allow public endpoints
                         .requestMatchers("/admin/**", "/branch/**", "/faculty/**", "/student/**", "/lectures/**", "/send-mail/**", "/image/**", "/online-classes/**", "/announcements/**", "/one-time-mail/**", "/assignments/**", "/files/**").hasRole("ADMIN")
                         .requestMatchers("/branch/**", "/faculty/**", "/student/**", "/lectures/**", "/send-mail/**", "/image/**", "/online-classes/**", "/announcements/**", "/one-time-mail/**", "/assignments/**", "/files/**").hasRole("FACULTY")
                         .requestMatchers("/student/**", "/lectures/**", "/files/**").hasRole("STUDENT")
                 )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)  // Add JWT filter
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // Add JWT filter
                 .build();
     }
 
@@ -55,8 +56,7 @@ public class SpringSecurity {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        System.out.println("spring password generated ....");
-        System.out.println("password encoder " + new BCryptPasswordEncoder());
+        System.out.println("Password encoder initialized.");
         return new BCryptPasswordEncoder();
     }
 
@@ -74,10 +74,12 @@ public class SpringSecurity {
                 "https://college-management-0127cs211009-gmailcoms-projects.vercel.app",
                 "https://college-management-git-main-0127cs211009-gmailcoms-projects.vercel.app"
         ));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin", "Cache-Control", "Pragma"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList(
+                "Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin", "Cache-Control", "Pragma"
+        ));
         configuration.setAllowCredentials(true);
-        configuration.addExposedHeader("Content-Disposition");  // Expose headers if needed
+        configuration.addExposedHeader("Content-Disposition"); // Expose headers if needed
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
