@@ -68,21 +68,37 @@ public class SpringSecurity {
     // CORS configuration bean to define allowed origins, methods, and headers
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(
+        // CORS configuration for public routes (no headers sent)
+        CorsConfiguration publicCorsConfig = new CorsConfiguration();
+        publicCorsConfig.setAllowedOrigins(Arrays.asList(
                 "https://college-management-eight.vercel.app",
                 "https://college-management-0127cs211009-gmailcoms-projects.vercel.app",
                 "https://college-management-git-main-0127cs211009-gmailcoms-projects.vercel.app"
         ));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList(
+        publicCorsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        publicCorsConfig.setAllowedHeaders(Arrays.asList("Content-Type", "X-Requested-With", "Accept", "Origin", "Cache-Control", "Pragma"));
+        publicCorsConfig.setAllowCredentials(true);
+        publicCorsConfig.addExposedHeader("Content-Disposition"); // Expose headers if needed
+
+        // CORS configuration for secured routes (include Authorization header)
+        CorsConfiguration securedCorsConfig = new CorsConfiguration();
+        securedCorsConfig.setAllowedOrigins(Arrays.asList(
+                "https://college-management-eight.vercel.app",
+                "https://college-management-0127cs211009-gmailcoms-projects.vercel.app",
+                "https://college-management-git-main-0127cs211009-gmailcoms-projects.vercel.app"
+        ));
+        securedCorsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        securedCorsConfig.setAllowedHeaders(Arrays.asList(
                 "Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin", "Cache-Control", "Pragma"
         ));
-        configuration.setAllowCredentials(true);
-        configuration.addExposedHeader("Content-Disposition"); // Expose headers if needed
+        securedCorsConfig.setAllowCredentials(true);
+        securedCorsConfig.addExposedHeader("Content-Disposition");
 
+        // Define the CORS configuration source based on URL patterns
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/public/**", publicCorsConfig); // Public routes without Authorization header
+        source.registerCorsConfiguration("/**", securedCorsConfig); // Protected routes with Authorization header
+
         System.out.println("CORS configuration applied.");
         return source;
     }
