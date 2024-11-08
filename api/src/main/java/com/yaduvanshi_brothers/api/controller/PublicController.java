@@ -108,7 +108,7 @@ public class PublicController {
 
         // Use SameSite=None for production, SameSite=Lax for localhost
         if (!isLocalhost) {
-            cookieHeader.append("; Secure; SameSite=None");  // Required for cross-origin cookies in production
+            cookieHeader.append("; SameSite=Lax");  // Required for cross-origin cookies in production
         } else {
             cookieHeader.append("; SameSite=Lax");  // Allows for localhost testing
         }
