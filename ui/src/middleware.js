@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 
 export function middleware(request) {
-    const token = request.cookies.get("username")?.value;
-    console.log("token from middleware:", token);  // Debug line
+    const token = request.cookies.get("jwt")?.value;  // This accesses the HttpOnly cookie
+    console.log("Token from middleware:", token);  // For debugging
 
     if (!token && (request.nextUrl.pathname === '/' || request.nextUrl.pathname === '/dashboard')) {
         return NextResponse.redirect(new URL('/login', request.url));
@@ -14,7 +14,6 @@ export function middleware(request) {
 
     return NextResponse.next();
 }
-
 
 export const config = {
     matcher: ['/', '/dashboard', '/login'],
