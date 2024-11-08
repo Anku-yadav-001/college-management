@@ -59,6 +59,9 @@ export default function Login() {
         position: "bottom-right"
       });
       
+      setTimeout(() => {
+        router.replace('/dashboard');
+      }, 1000);
       
     } catch (error) {
       console.log(error);
