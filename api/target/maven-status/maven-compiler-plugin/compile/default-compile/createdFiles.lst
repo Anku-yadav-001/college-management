@@ -20,7 +20,6 @@ com\yaduvanshi_brothers\api\controller\AdminController.class
 com\yaduvanshi_brothers\api\service\AnnouncementService.class
 com\yaduvanshi_brothers\api\controller\EmailSendingController.class
 com\yaduvanshi_brothers\api\DTOs\EmailRequestDTO.class
-com\yaduvanshi_brothers\api\config\CorsConfig.class
 com\yaduvanshi_brothers\api\controller\EmailRequestController.class
 com\yaduvanshi_brothers\api\service\StudentService.class
 com\yaduvanshi_brothers\api\repository\FacultyRepository.class

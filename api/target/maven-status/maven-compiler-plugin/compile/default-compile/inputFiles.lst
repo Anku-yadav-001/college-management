@@ -42,7 +42,6 @@ C:\Users\amany\Downloads\Learning\college-management\api\src\main\java\com\yaduv
 C:\Users\amany\Downloads\Learning\college-management\api\src\main\java\com\yaduvanshi_brothers\api\entity\OnlineClassEntity.java
 C:\Users\amany\Downloads\Learning\college-management\api\src\main\java\com\yaduvanshi_brothers\api\entity\LectureEntity.java
 C:\Users\amany\Downloads\Learning\college-management\api\src\main\java\com\yaduvanshi_brothers\api\controller\FacultyController.java
-C:\Users\amany\Downloads\Learning\college-management\api\src\main\java\com\yaduvanshi_brothers\api\config\CorsConfig.java
 C:\Users\amany\Downloads\Learning\college-management\api\src\main\java\com\yaduvanshi_brothers\api\DTOs\AnnouncementDTO.java
 C:\Users\amany\Downloads\Learning\college-management\api\src\main\java\com\yaduvanshi_brothers\api\repository\UserRepository.java
 C:\Users\amany\Downloads\Learning\college-management\api\src\main\java\com\yaduvanshi_brothers\api\filter\JwtFilter.java
