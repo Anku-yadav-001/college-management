@@ -59,14 +59,6 @@ export default function Login() {
         position: "bottom-right"
       });
       
-      // Redirect to dashboard after a short delay
-      console.log("Redirecting to dashboard");
-      setTimeout(() => {
-        console.log("Redirecting to dashboard inside timeout");
-        router.replace('/dashboard');  // replace() instead of push()
-        console.log("Redirected to dashboard inside timeout");
-      }, 1000);
-      console.log("Redirected to dashboard");
       
     } catch (error) {
       console.log(error);
