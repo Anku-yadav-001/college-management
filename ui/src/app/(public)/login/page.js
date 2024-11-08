@@ -60,9 +60,14 @@ export default function Login() {
       });
       
       // Redirect to dashboard after a short delay
+      console.log("Redirecting to dashboard");
       setTimeout(() => {
-        router.push('/dashboard');
+        console.log("Redirecting to dashboard inside timeout");
+        router.replace('/dashboard');  // replace() instead of push()
+        console.log("Redirected to dashboard inside timeout");
       }, 1000);
+      console.log("Redirected to dashboard");
+      
     } catch (error) {
       console.log(error);
       toast.error('Login failed, please try again.', {
