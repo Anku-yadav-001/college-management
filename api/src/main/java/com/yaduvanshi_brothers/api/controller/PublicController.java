@@ -85,34 +85,28 @@ public class PublicController {
             // Set JWT cookie with SameSite attribute manually
             Cookie jwtCookie = new Cookie("jwt", jwt);
             jwtCookie.setHttpOnly(true);
-            jwtCookie.setSecure(true); // Ensure it is sent over HTTPS
+            jwtCookie.setSecure(true); // HTTPS requirement for cross-site
             jwtCookie.setPath("/");
             jwtCookie.setMaxAge(3600);
-            jwtCookie.setDomain("college-management-ebre.onrender.com"); // Set backend domain
+            jwtCookie.setDomain("college-management-ebre.onrender.com");
             response.addCookie(jwtCookie);
-            response.setHeader("Set-Cookie", "jwt=" + jwt + "; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=3600; Domain=college-management-ebre.onrender.com");
 
-
-            // Set username cookie with SameSite attribute manually
+// Set additional cookies similarly
             Cookie usernameCookie = new Cookie("username", userDetails.getUsername());
+            usernameCookie.setHttpOnly(false);
             usernameCookie.setSecure(true);
-            usernameCookie.setHttpOnly(false); // Allow client to access
             usernameCookie.setPath("/");
             usernameCookie.setMaxAge(3600);
-            usernameCookie.setDomain("college-management-ebre.onrender.com"); // Set backend domain
+            usernameCookie.setDomain("college-management-ebre.onrender.com");
             response.addCookie(usernameCookie);
-            response.setHeader("Set-Cookie", "username=" + userDetails.getUsername() + "; Secure; SameSite=None; Path=/; Max-Age=3600; Domain=college-management-ebre.onrender.com");
 
-            // Set role cookie with SameSite attribute manually
             Cookie roleCookie = new Cookie("role", role);
+            roleCookie.setHttpOnly(false);
             roleCookie.setSecure(true);
-            roleCookie.setHttpOnly(false); // Allow client to access
             roleCookie.setPath("/");
             roleCookie.setMaxAge(3600);
-            roleCookie.setDomain("college-management-ebre.onrender.com"); // Set backend domain
+            roleCookie.setDomain("college-management-ebre.onrender.com");
             response.addCookie(roleCookie);
-            response.setHeader("Set-Cookie", "role=" + role + "; Secure; SameSite=None; Path=/; Max-Age=3600; Domain=college-management-ebre.onrender.com");
-
             return ResponseEntity.ok("Login successful");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
