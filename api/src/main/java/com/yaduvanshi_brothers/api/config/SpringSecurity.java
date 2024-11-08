@@ -70,6 +70,7 @@ public class SpringSecurity {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfig = new CorsConfiguration();
         corsConfig.setAllowedOrigins(Arrays.asList(
+                "http://localhost:3000",
                 "https://college-management-eight.vercel.app",
                 "https://college-management-0127cs211009-gmailcoms-projects.vercel.app",
                 "https://college-management-git-main-0127cs211009-gmailcoms-projects.vercel.app"

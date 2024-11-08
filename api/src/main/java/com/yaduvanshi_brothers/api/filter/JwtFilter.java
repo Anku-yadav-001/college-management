@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -29,10 +28,18 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String jwt = getJwtFromCookies(request);
-        System.out.println(jwt+" founded jwt token");
 
+        String jwt = getJwtFromCookies(request);
         String requestURI = request.getRequestURI();
+
+        System.out.println("JWT Token found: " + jwt);
+        System.out.println("Request URI: " + requestURI);
+
+        // Allow OPTIONS requests (CORS preflight)
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         // Skip JWT token validation for public routes
         if (requestURI.startsWith("/public")) {
@@ -51,12 +58,18 @@ public class JwtFilter extends OncePerRequestFilter {
                     auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 } else {
+                    // Token is invalid or expired
                     System.out.println("JWT validation failed.");
+                    SecurityContextHolder.clearContext();
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT Token");
+                    return;
                 }
             }
         } else {
             System.out.println("No JWT token found.");
         }
+
+        // Continue with the filter chain if token is valid or if accessing public resources
         filterChain.doFilter(request, response);
     }
 
@@ -73,5 +86,4 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         return null;
     }
-
 }
