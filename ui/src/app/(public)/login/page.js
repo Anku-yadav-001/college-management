@@ -50,8 +50,7 @@ export default function Login() {
       try {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}/public/login`, 
-          { username, password }, // The data object (request body)
-          { withCredentials: true } // The config object (headers, credentials, etc.)
+          { username, password }, 
         );
         
       
