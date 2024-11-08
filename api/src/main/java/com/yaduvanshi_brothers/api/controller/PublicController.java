@@ -63,6 +63,7 @@ public class PublicController {
         List<UserEntity> allUsers = userService.allUsersService();
         return new ResponseEntity<>(allUsers, HttpStatus.OK);
     }
+    // Adjusted login method
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserEntity userData, HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -85,32 +86,34 @@ public class PublicController {
             boolean isLocalhost = "localhost".equals(request.getServerName());
             System.out.println("Server name: " + isLocalhost + " " + request.getServerName());
 
-            // Add cookies with appropriate SameSite and Secure attributes
-            addSameSiteCookie(response, "jwt", jwt, 3600, true, isLocalhost);  // HttpOnly for security
-            addSameSiteCookie(response, "username", userDetails.getUsername(), 3600, false, isLocalhost);  // Accessible from browser
-            addSameSiteCookie(response, "role", role, 3600, false, isLocalhost);  // Accessible from browser
+            // Helper method to add cookie with conditional SameSite attribute
+            addSameSiteCookie(response, "jwt", jwt, 3600, true, isLocalhost);
+            addSameSiteCookie(response, "username", userDetails.getUsername(), 3600, false, isLocalhost);
+            addSameSiteCookie(response, "role", role, 3600, false, isLocalhost);
 
             return ResponseEntity.ok("Login successful");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
         }
     }
-
     private void addSameSiteCookie(HttpServletResponse response, String name, String value, int maxAge, boolean httpOnly, boolean isLocalhost) {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
         cookie.setMaxAge(maxAge);
-        cookie.setHttpOnly(httpOnly);  // Make jwt HttpOnly, others accessible from browser
+        cookie.setHttpOnly(httpOnly);
+        cookie.setSecure(!isLocalhost);  // Set Secure only in production
 
-        // Set Secure and SameSite attributes manually using the Set-Cookie header
+        StringBuilder cookieHeader = new StringBuilder(name + "=" + value + "; Path=/; Max-Age=" + maxAge);
+        if (httpOnly) cookieHeader.append("; HttpOnly");
+
+        // Use SameSite=None for production, SameSite=Lax for localhost
         if (!isLocalhost) {
-            cookie.setSecure(true);
-            response.addHeader("Set-Cookie", cookie.getName() + "=" + cookie.getValue() + "; Path=" + cookie.getPath() +
-                    "; Max-Age=" + cookie.getMaxAge() + "; Secure; HttpOnly; SameSite=None");
+            cookieHeader.append("; Secure; SameSite=None");  // Required for cross-origin cookies in production
         } else {
-            response.addHeader("Set-Cookie", cookie.getName() + "=" + cookie.getValue() + "; Path=" + cookie.getPath() +
-                    "; Max-Age=" + cookie.getMaxAge() + "; HttpOnly; SameSite=Lax");
+            cookieHeader.append("; SameSite=Lax");  // Allows for localhost testing
         }
+
+        response.addHeader("Set-Cookie", cookieHeader.toString());
     }
 
 // Logout method remains unchanged except for cookie clearing
