@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/public")
 @Slf4j
@@ -47,22 +46,23 @@ public class PublicController {
     private FacultyService facultyService;
 
     @GetMapping("/health-check")
-    public ResponseEntity<?> healthCheckController(){
+    public ResponseEntity<?> healthCheckController() {
         System.out.println("health check api hit..ed");
-        return  ResponseEntity.status(HttpStatus.OK).body("server is working fine...");
+        return ResponseEntity.status(HttpStatus.OK).body("server is working fine...");
     }
 
     @GetMapping("/check")
-    public ResponseEntity<?> publicUrl(){
+    public ResponseEntity<?> publicUrl() {
         System.out.println("check url hitted..");
-        return  ResponseEntity.status(HttpStatus.OK).body("this is public url");
+        return ResponseEntity.status(HttpStatus.OK).body("this is public url");
     }
 
     @GetMapping("/get-all-users-on-this-website")
-    public ResponseEntity<List<UserEntity>> userListController(){
+    public ResponseEntity<List<UserEntity>> userListController() {
         List<UserEntity> allUsers = userService.allUsersService();
         return new ResponseEntity<>(allUsers, HttpStatus.OK);
     }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserEntity userData, HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -100,64 +100,56 @@ public class PublicController {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
         cookie.setMaxAge(maxAge);
-        cookie.setHttpOnly(httpOnly);  // Make jwt HttpOnly, others accessible from browser JavaScript
+        cookie.setHttpOnly(httpOnly);
 
-        // Set Secure and SameSite attributes manually using the Set-Cookie header
+        // Construct the `Set-Cookie` header manually for additional attributes
         String setCookieHeader = cookie.getName() + "=" + cookie.getValue() + "; Path=" + cookie.getPath() + "; Max-Age=" + cookie.getMaxAge();
 
         if (httpOnly) {
-            setCookieHeader += "; HttpOnly";  // Only add HttpOnly if true
+            setCookieHeader += "; HttpOnly";
         }
 
         if (!isLocalhost) {
-            // For production: Secure and SameSite=None for cross-origin requests
+            // In production: `Secure` and `SameSite=None` for cross-origin access
             setCookieHeader += "; Secure; SameSite=None";
         } else {
-            // For localhost: SameSite=Lax
+            // In localhost: `SameSite=Lax`
             setCookieHeader += "; SameSite=Lax";
         }
 
-        // Add the constructed header to response
+        // Apply the header to response
         response.addHeader("Set-Cookie", setCookieHeader);
     }
 
-// Logout method remains unchanged except for cookie clearing
-
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
-        // Clear JWT cookie with SameSite attribute manually
-        Cookie jwtCookie = new Cookie("jwt", null);
-        jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(0);
-        jwtCookie.setHttpOnly(false);
-        jwtCookie.setDomain("college-management-ebre.onrender.com"); // Set backend domain
-        response.addCookie(jwtCookie);
-        response.setHeader("Set-Cookie", "jwt=; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=0; Domain=college-management-ebre.onrender.com");
+        String domain = "college-management-ebre.onrender.com"; // Production domain; update as needed
 
-        // Clear Username Cookie with SameSite attribute manually
-        Cookie usernameCookie = new Cookie("username", null);
-        usernameCookie.setPath("/");
-        usernameCookie.setMaxAge(0);
-        usernameCookie.setHttpOnly(false);
-        usernameCookie.setDomain("college-management-ebre.onrender.com"); // Set backend domain
-        response.addCookie(usernameCookie);
-        response.setHeader("Set-Cookie", "username=; Secure; SameSite=None; Path=/; Max-Age=0; Domain=college-management-ebre.onrender.com");
+        // Clear JWT Cookie
+        clearCookie(response, "jwt", domain);
 
-        // Clear Role Cookie with SameSite attribute manually
-        Cookie roleCookie = new Cookie("role", null);
-        roleCookie.setPath("/");
-        roleCookie.setMaxAge(0);
-        roleCookie.setHttpOnly(false);
-        roleCookie.setDomain("college-management-ebre.onrender.com"); // Set backend domain
-        response.addCookie(roleCookie);
-        response.setHeader("Set-Cookie", "role=; Secure; SameSite=None; Path=/; Max-Age=0; Domain=college-management-ebre.onrender.com");
+        // Clear Username Cookie
+        clearCookie(response, "username", domain);
+
+        // Clear Role Cookie
+        clearCookie(response, "role", domain);
 
         return ResponseEntity.ok("Logout successful...");
     }
 
+    private void clearCookie(HttpServletResponse response, String name, String domain) {
+        Cookie cookie = new Cookie(name, null);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        cookie.setHttpOnly(false);
+        cookie.setDomain(domain);
+
+        // Construct `Set-Cookie` header with Secure and SameSite attributes to match login settings
+        response.addHeader("Set-Cookie", name + "=; Path=/; Max-Age=0; Domain=" + domain + "; Secure; SameSite=None");
+    }
 
     @PostMapping("/add-user")
-    public ResponseEntity<String> userUserByAdminController(@RequestBody UserEntity userEntity){
+    public ResponseEntity<String> userUserByAdminController(@RequestBody UserEntity userEntity) {
         userService.adduserByAdminService(userEntity);
         return new ResponseEntity<>("User added successfully", HttpStatus.CREATED);
     }
