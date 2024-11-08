@@ -96,27 +96,23 @@ public class PublicController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
         }
     }
-    // Helper method to add cookies with conditional SameSite
     private void addSameSiteCookie(HttpServletResponse response, String name, String value, int maxAge, boolean httpOnly, boolean isLocalhost) {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
         cookie.setMaxAge(maxAge);
         cookie.setHttpOnly(httpOnly);
-        cookie.setSecure(!isLocalhost);  // Set Secure based on environment (secure in production)
+        cookie.setSecure(!isLocalhost);  // Set Secure only in production
 
-        // Manually construct Set-Cookie header with SameSite attribute
         StringBuilder cookieHeader = new StringBuilder(name + "=" + value + "; Path=/; Max-Age=" + maxAge);
         if (httpOnly) cookieHeader.append("; HttpOnly");
-        cookieHeader.append("; SameSite=");
 
-        // Ensure SameSite=None is used for production and SameSite=Lax for localhost
-        if (isLocalhost) {
-            cookieHeader.append("Lax");
+        // Use SameSite=None for production, SameSite=Lax for localhost
+        if (!isLocalhost) {
+            cookieHeader.append("; Secure; SameSite=None");  // Required for cross-origin cookies in production
         } else {
-            cookieHeader.append("None");
+            cookieHeader.append("; SameSite=Lax");  // Allows for localhost testing
         }
 
-        // Add the cookie header to the response
         response.addHeader("Set-Cookie", cookieHeader.toString());
     }
 
