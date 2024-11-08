@@ -1,5 +1,6 @@
 package com.yaduvanshi_brothers.api.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import com.yaduvanshi_brothers.api.entity.FacultyEntity;
 import com.yaduvanshi_brothers.api.entity.UserEntity;
@@ -62,13 +63,12 @@ public class PublicController {
         List<UserEntity> allUsers = userService.allUsersService();
         return new ResponseEntity<>(allUsers, HttpStatus.OK);
     }
-
-
+    // Adjusted login method
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserEntity userData, HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody UserEntity userData, HttpServletRequest request, HttpServletResponse response) {
         try {
             // Authenticate the user
-            System.out.println("in login controller..."+userData.getUsername()+" "+userData.getPassword()+" "+userData.getRoles());
+            System.out.println("In login controller..." + userData.getUsername() + " " + userData.getPassword() + " " + userData.getRoles());
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userData.getUsername(), userData.getPassword())
             );
@@ -82,36 +82,39 @@ public class PublicController {
             String role = userDetails.getAuthorities().stream()
                     .findFirst().orElseThrow().getAuthority();
 
-            // Set JWT cookie with SameSite attribute manually
-            Cookie jwtCookie = new Cookie("jwt", jwt);
-            jwtCookie.setHttpOnly(true);
-            jwtCookie.setSecure(true); // HTTPS requirement for cross-site
-            jwtCookie.setPath("/");
-            jwtCookie.setMaxAge(3600);
-            jwtCookie.setDomain("college-management-ebre.onrender.com");
-            response.addCookie(jwtCookie);
+            // Check if running on localhost
+            boolean isLocalhost = "localhost".equals(request.getServerName());
+            System.out.println("Server name: " + isLocalhost + " " + request.getServerName());
 
-// Set additional cookies similarly
-            Cookie usernameCookie = new Cookie("username", userDetails.getUsername());
-            usernameCookie.setHttpOnly(false);
-            usernameCookie.setSecure(true);
-            usernameCookie.setPath("/");
-            usernameCookie.setMaxAge(3600);
-            usernameCookie.setDomain("college-management-ebre.onrender.com");
-            response.addCookie(usernameCookie);
+            // Helper method to add cookie with conditional SameSite attribute
+            addSameSiteCookie(response, "jwt", jwt, 3600, true, isLocalhost);
+            addSameSiteCookie(response, "username", userDetails.getUsername(), 3600, false, isLocalhost);
+            addSameSiteCookie(response, "role", role, 3600, false, isLocalhost);
 
-            Cookie roleCookie = new Cookie("role", role);
-            roleCookie.setHttpOnly(false);
-            roleCookie.setSecure(true);
-            roleCookie.setPath("/");
-            roleCookie.setMaxAge(3600);
-            roleCookie.setDomain("college-management-ebre.onrender.com");
-            response.addCookie(roleCookie);
             return ResponseEntity.ok("Login successful");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
         }
     }
+
+    // Helper method to add cookies with conditional SameSite
+    private void addSameSiteCookie(HttpServletResponse response, String name, String value, int maxAge, boolean httpOnly, boolean isLocalhost) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setPath("/");
+        cookie.setMaxAge(maxAge);
+        cookie.setHttpOnly(httpOnly);
+        cookie.setSecure(!isLocalhost); // Enable Secure for non-localhost only
+
+        // Manually construct Set-Cookie header with SameSite attribute
+        StringBuilder cookieHeader = new StringBuilder(name + "=" + value + "; Path=/; Max-Age=" + maxAge);
+        if (httpOnly) cookieHeader.append("; HttpOnly");
+        if (!isLocalhost) cookieHeader.append("; Secure; SameSite=None");
+        else cookieHeader.append("; SameSite=Lax");
+
+        response.addHeader("Set-Cookie", cookieHeader.toString());
+    }
+
+// Logout method remains unchanged except for cookie clearing
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
