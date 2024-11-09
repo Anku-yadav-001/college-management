@@ -174,6 +174,9 @@ public class LectureController {
             return dto;
         }).collect(Collectors.toList());
     }
+
+
+
 }
 
 //GET /lectures/get-all-lectures

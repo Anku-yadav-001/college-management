@@ -6,7 +6,11 @@ import com.yaduvanshi_brothers.api.DTOs.OnlineClassDTO;
 import com.yaduvanshi_brothers.api.DTOs.StudentDTO;
 import com.yaduvanshi_brothers.api.entity.BranchesEntity;
 import com.yaduvanshi_brothers.api.entity.FacultyEntity;
+import com.yaduvanshi_brothers.api.entity.LectureEntity;
 import com.yaduvanshi_brothers.api.entity.StudentEntity;
+import com.yaduvanshi_brothers.api.service.AssignmentService;
+import com.yaduvanshi_brothers.api.service.LectureService;
+import com.yaduvanshi_brothers.api.service.OnlineClassService;
 import com.yaduvanshi_brothers.api.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,8 +26,14 @@ public class StudentController {
     @Autowired
     private StudentService studentService;
 
-    // Get all students
-    // Inside StudentController
+    @Autowired
+    private AssignmentService assignmentService;
+
+    @Autowired
+    private OnlineClassService onlineClassService;
+
+    @Autowired
+    private LectureService lectureService;
 
     @GetMapping("/get-all-students")
     public ResponseEntity<List<StudentDTO>> getAllStudents() {
@@ -251,4 +261,43 @@ public class StudentController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Student added successfully");
     }
 
+
+    @GetMapping("/online-classes-for-today")
+    public ResponseEntity<List<OnlineClassDTO>> getClassesForToday() {
+        List<OnlineClassDTO> onlineClassesForToday = onlineClassService.getOnlineClassesForToday();
+        return ResponseEntity.ok(onlineClassesForToday);
+    }
+
+    @GetMapping("/lectures-for-today")
+    public ResponseEntity<List<LectureDTO>> getLecturesForToday() {
+        List<LectureEntity> lectures = lectureService.getLecturesForToday();
+
+        // Map to DTO for returning in response
+        List<LectureDTO> lectureDTOs = lectures.stream()
+                .map(lecture -> {
+                    LectureDTO dto = new LectureDTO();
+                    dto.setLectureId(lecture.getLectureId());
+                    dto.setYear(lecture.getYear());
+                    dto.setSemester(lecture.getSemester());
+                    dto.setDepartment(lecture.getDepartment());
+                    dto.setSubject(lecture.getSubject());
+                    dto.setStartFrom(lecture.getStartFrom());
+                    dto.setTill(lecture.getTill());
+                    dto.setRoomNumber(lecture.getRoomNumber());
+                    dto.setFacultyId(lecture.getFaculty() != null ? lecture.getFaculty().getFacultyId() : null);
+                    dto.setStudentIds(lecture.getStudents().stream()
+                            .map(student -> student.getStudentId())
+                            .collect(Collectors.toList()));
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(lectureDTOs);
+    }
+
+    @GetMapping("/get-today-assignments")
+    public ResponseEntity<List<AssignmentDTO>> getAssignmentsForToday() {
+        List<AssignmentDTO> assignments = assignmentService.getAssignmentsForToday();
+        return ResponseEntity.ok(assignments);
+    }
 }

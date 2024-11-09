@@ -65,5 +65,11 @@ public class AssignmentController {
         assignmentService.deleteAssignmentService(id);
         return ResponseEntity.ok("Assignment deleted successfully");
     }
+
+    @GetMapping("/get-today-assignments")
+    public ResponseEntity<List<AssignmentDTO>> getAssignmentsForToday() {
+        List<AssignmentDTO> assignments = assignmentService.getAssignmentsForToday();
+        return ResponseEntity.ok(assignments);
+    }
 }
 

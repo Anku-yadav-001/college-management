@@ -162,6 +162,7 @@ public class FacultyController {
     @PostMapping("/add-faculty")
     public ResponseEntity<String> addFaculty(@ModelAttribute FacultyEntity facultyEntity,
                                              @RequestParam("image") MultipartFile imageFile) {
+        System.out.println("adding faculty");
         try {
             facultyService.addFacultyService(facultyEntity, imageFile);
             return ResponseEntity.ok("Faculty added successfully");

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -139,6 +140,21 @@ public class AssignmentService {
 
         return assignmentEntity;
     }
+
+    public List<AssignmentDTO> getAssignmentsForToday() {
+        LocalDate today = LocalDate.now();
+        List<AssignmentEntity> assignmentsForToday = assignmentRepository.findAll().stream()
+                .filter(assignment -> !assignment.getStartDate().toLocalDate().isBefore(today) && // Ensure startDate is not before today
+                        assignment.getStartDate().toLocalDate().equals(today) &&  // Ensure the startDate is exactly today
+                        !assignment.getEndDate().toLocalDate().isBefore(today)) // Ensure endDate is not before today
+                .collect(Collectors.toList());
+
+        // Map the assignments to DTOs and return
+        return assignmentsForToday.stream()
+                .map(this::mapEntityToDto)
+                .collect(Collectors.toList());
+    }
+
 
     private void mapDtoToEntityForUpdate(AssignmentEntity entity, AssignmentDTO dto) {
         entity.setYear(dto.getYear());

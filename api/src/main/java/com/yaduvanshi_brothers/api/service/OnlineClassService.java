@@ -12,6 +12,12 @@ import com.yaduvanshi_brothers.api.repository.StudentRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -113,6 +119,35 @@ public class OnlineClassService {
         return convertToDTO(onlineClass);
     }
 
+
+
+    public List<OnlineClassDTO> getOnlineClassesForToday() {
+        // Get the current date in IST (Indian Standard Time)
+        ZonedDateTime currentDateInIST = ZonedDateTime.now(ZoneId.of("Asia/Kolkata"));
+
+        // Define the formatter for the string date (assuming format is yyyy-MM-dd'T'HH:mm:ss)
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
+        // Fetch all online classes from the repository
+        List<OnlineClassEntity> onlineClasses = onlineClassRepository.findAll();
+
+        // Filter online classes based on startFrom date matching today's date in IST
+        return onlineClasses.stream()
+                .filter(onlineClass -> {
+                    String startFromString = onlineClass.getStartFrom();
+
+                    // Parse the string into LocalDateTime (no time zone)
+                    LocalDateTime startFromLocalDateTime = LocalDateTime.parse(startFromString, formatter);
+
+                    // Convert LocalDateTime to ZonedDateTime in IST
+                    ZonedDateTime startFromInIST = startFromLocalDateTime.atZone(ZoneId.of("Asia/Kolkata"));
+
+                    // Compare only the date part (ignoring time) with today's date in IST
+                    return startFromInIST.toLocalDate().equals(currentDateInIST.toLocalDate());
+                })
+                .map(this::convertToDTO) // Convert to DTO
+                .collect(Collectors.toList());
+    }
 
     private OnlineClassDTO convertToDTO(OnlineClassEntity onlineClass) {
         OnlineClassDTO dto = new OnlineClassDTO();
