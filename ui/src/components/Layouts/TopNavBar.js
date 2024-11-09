@@ -33,8 +33,8 @@ export default function TopNavBar() {
       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/public/logout`, {}, { withCredentials: true })
       
       Cookies.remove("jwt")
-      Cookies.remove("username")
-      Cookies.remove("role")
+      Cookies.remove("name")
+      Cookies.remove("roles")
 
       setIsLogoutDialogOpen(false)
 
@@ -50,7 +50,7 @@ export default function TopNavBar() {
   }
 
   useEffect(() => {
-    const username = Cookies.get("username")
+    const username = Cookies.get("name")
     setUsername(username)
   }, [])  
 

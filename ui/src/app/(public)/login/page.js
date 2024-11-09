@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { UserIcon, LockIcon, EyeIcon, EyeOffIcon, Loader2 } from 'lucide-react'
 import { toast, Toaster } from 'react-hot-toast'
-
+import Cookies from 'js-cookie';
 export default function Login() {
   const router = useRouter();
   const [username, setUsername] = useState('');
@@ -16,6 +16,16 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({ username: '', password: '' });
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    // Check for existing cookies on component mount
+    const usernameCookie = getCookie('name');
+    const roleCookie = getCookie('roles');
+    if (usernameCookie && roleCookie) {
+      console.log('User already logged in:', usernameCookie, 'Role:', roleCookie);
+      router.replace('/dashboard');
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,24 +58,37 @@ export default function Login() {
         { withCredentials: true }
       );
       
-      console.log(response);
-      toast.success('Login successful!', {
-        duration: 3000,
-        icon: '🎉',
-        style: {
-          background: '#4CAF50',
-          color: '#fff',
-        },
-        position: "bottom-right"
-      });
-      
-      setTimeout(() => {
-        router.replace('/dashboard');
-      }, 1000);
-      
+      console.log("response from login page:", response);
+      if (response.data.status === 'success') {
+        toast.success('Login successful!', {
+          duration: 3000,
+          icon: '🎉',
+          style: {
+            background: '#4CAF50',
+            color: '#fff',
+          },
+          position: "bottom-right"
+        });
+        
+        // Cookies are set by the server, but we can check them here
+       Cookies.set('name', response.data.username);
+       Cookies.set('roles', response.data.role);
+        const roleCookie = Cookies.get('roles');
+        console.log('Logged in as:', Cookies.get('name'), 'Role:', roleCookie);
+
+        setTimeout(() => {
+          router.replace('/dashboard');
+        }, 1000);
+      } else {
+        throw new Error('Login failed');
+      }
     } catch (error) {
-      console.log(error);
-      toast.error('Login failed, please try again.', {
+      console.error(error);
+      let errorMessage = 'Login failed, please try again.';
+      if (error.response && error.response.status === 401) {
+        errorMessage = 'Incorrect username or password';
+      }
+      toast.error(errorMessage, {
         duration: 4000,
         icon: '⚠️',
         style: {
@@ -81,6 +104,13 @@ export default function Login() {
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
+  };
+
+  // Function to get cookie value by name
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
   };
 
   return (
