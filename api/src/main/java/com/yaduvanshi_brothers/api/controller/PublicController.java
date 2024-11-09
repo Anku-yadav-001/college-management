@@ -20,7 +20,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/public")
@@ -90,7 +92,14 @@ public class PublicController {
             addSameSiteCookie(response, "username", userDetails.getUsername(), 3600, false, isLocalhost);  // Accessible from browser
             addSameSiteCookie(response, "role", role, 3600, false, isLocalhost);      // Accessible from browser
 
-            return ResponseEntity.ok("Login successful");
+            // Response with username, role, and success message
+            Map<String, String> responseBody = new HashMap<>();
+            responseBody.put("message", "login successful");
+            responseBody.put("status","success");
+            responseBody.put("username", userDetails.getUsername());
+            responseBody.put("role", role);
+
+            return ResponseEntity.ok(responseBody);  // Sending username, role, and message in response body
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
         }
