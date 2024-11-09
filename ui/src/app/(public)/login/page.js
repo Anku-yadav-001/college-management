@@ -71,8 +71,8 @@ export default function Login() {
         });
         
         // Cookies are set by the server, but we can check them here
-       Cookies.set('name', response.data.username);
-       Cookies.set('roles', response.data.role);
+        Cookies.set('name', response.data.username, { expires: 1 / 24 });
+        Cookies.set('roles', response.data.role, { expires: 1 / 24 });
         const roleCookie = Cookies.get('roles');
         console.log('Logged in as:', Cookies.get('name'), 'Role:', roleCookie);
 
