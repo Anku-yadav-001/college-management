@@ -275,7 +275,7 @@ const renderEmptyCards = () => (
           <Bell className="w-8 h-8 text-purple-500 " />
           <h3 className="text-md font-semibold text-gray-800">No Announcements</h3>
           <p className="text-gray-600 text-center text-sm">
-            Stay tuned! We'll notify you when there are new updates.
+            Stay tuned! We&apos;ll notify you when there are new updates.
           </p>
         </div>
       </CardContent>
@@ -299,7 +299,7 @@ const renderEmptyCards = () => (
   return (
     <div className="mx-auto">
       <div className="bg-gradient-to-br from-purple-500 to-blue-600 text-white p-2 rounded-sm mb-4">
-        <h1 className="text-xl font-bold">Today's Schedule</h1>
+        <h1 className="text-xl font-bold">Today&apos;s Schedule</h1>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[79vh]">
         <Card className="lg:col-span-3 space-y-6 h-full overflow-y-scroll p-2 rounded-sm">

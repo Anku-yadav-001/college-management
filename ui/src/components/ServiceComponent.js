@@ -15,7 +15,7 @@ export default function ServiceComponent() {
         </h2>
         
         <p className="text-gray-600 mb-6">
-          We're currently working on improvements. This page will be accessible shortly.
+          We&apos;re currently working on improvements. This page will be accessible shortly.
         </p>
         
         <Button className="bg-gradient-to-br from-purple-500 to-blue-600 text-white p-2 rounded-sm mb-4"
