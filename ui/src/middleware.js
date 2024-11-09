@@ -1,26 +1,20 @@
 import { NextResponse } from 'next/server';
 
 export function middleware(request) {
-  const { cookies, url } = request;
-  const usernameCookie = cookies.get('username'); // Check if 'username' cookie is present
+    const token = request.cookies.get("username")?.value;
 
-  console.log("usernameCookie from middleware:", usernameCookie);  // Debug to ensure token is available
+    console.log("token from middleware:", token);
+    if (!token && request.nextUrl.pathname === '/') {
+        return NextResponse.redirect(new URL('/login', request.url));
+    }
 
-  // If the user is already logged in, redirect them to the dashboard
-  if (usernameCookie && url.includes('/login')) {
-    return NextResponse.redirect(new URL('/dashboard', url));
-  }
+    if (token && request.nextUrl.pathname === '/') {
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
 
-  // If the user is not logged in and trying to access the dashboard, redirect them to login
-  if (!usernameCookie && url.includes('/dashboard')) {
-    return NextResponse.redirect(new URL('/login', url));
-  }
-
-  // Allow access to other routes
-  return NextResponse.next();
+    return NextResponse.next();
 }
 
-// Apply the middleware only to specific routes using a matcher
 export const config = {
-  matcher: ['/dashboard', '/login'], // Add paths where middleware should run
+    matcher: ['/', '/dashboard', '/login'],
 };
